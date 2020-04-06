@@ -69,11 +69,18 @@ def findFinal(iniCenter, p):
     landPoint = Point(x2 - dx, y2 - dy)
     return landPoint
 
+# Takes the landing point returned by findFinal() and returns a boolean of whether or not it's inside a square in the target
+
 
 def isInside(finPoint, makeSquare):
+    # Grabs center point of where the "ball" landed
     land_center = finPoint.getCenter()
+
+    # Grabs corner points of makeSquare
     p1 = makeSquare.getP1()
     p2 = makeSquare.getP2()
+
+    # Grabs individual x and y values of p1 and p2
     x1 = p1.getX()
     x2 = p2.getX()
     y1 = p1.getY()
@@ -82,26 +89,31 @@ def isInside(finPoint, makeSquare):
     inside = False
     land_x = land_center.getX()
     land_y = land_center.getY()
+
+    # Determines whether or not "ball" is inside a square
     if (land_x >= x1 and land_x <= x2) and (land_y >= y1 and land_y <= y2):
         inside = True
     return inside
 
+# Takes the inner, middle, and outer targets of game and gives appropriate score depending on where the "ball" landed
 
-def computeScore1():
+
+def computeScore(finPoint, s1, s2, s3, s4):
     score = 0
-    score += 2
-    return score
-
-
-def computeScore2():
-    score = 0
-    score += 5
-    return score
-
-
-def computeScore3():
-    score = 0
-    score += 10
+    inner = isInside(finPoint, s3)
+    middle = isInside(finPoint, s2)
+    outer = isInside(finPoint, s1)
+    bonus = isInside(finPoint, s4)
+    if inner == True:
+        score += 10
+    elif middle == True:
+        score += 5
+    elif outer == True:
+        score += 2
+    elif bonus == True:
+        score += 25
+    else:
+        score += 0
     return score
 
 
@@ -165,14 +177,8 @@ def main():
         finPoint.setFill('black')
         finPoint.draw(win)
 
-        score += score
-        inside = isInside(finPoint, s3)
-        score1 = computeScore3()
-        inside = isInside(finPoint, s2)
-        score2 = computeScore2()
-        inside = isInside(finPoint, s1)
-        score3 = computeScore1()
-        score = score1 + score2 + score3
+        compute = computeScore(finPoint, s1, s2, s3, s4)
+        score += compute
 
     point = result(score)
     point.draw(win)
