@@ -2,15 +2,12 @@
 #
 #
 #
-#
 
 from graphics import *
 from random import randrange
 
 
 # creates intro message and returns it
-
-
 def introduction():
     message = Text(Point(450, 250), 'Welcome to target practice!\n\n'
                    'Try to beat your high score!\n'
@@ -22,26 +19,21 @@ def introduction():
 
 # Make squares big fella
 # Constructs a rectangle having opposite corners at point1 and point2.
-
-
 def makeSquare(a, b, c, d, color):
     rect = Rectangle(Point(a, b), Point(c, d))
     rect.setFill(color)
     return rect
 
 # Create random starting point in bottom third of window
-# Since our graphics window is 900x900, lets make our range of starting points slightly smaller so that our initial standing point isn't off screen
-
-
+# Since our graphics window is 900x900, lets make our range of starting points slightly smaller
+# so that our initial starting point isn't off screen
 def pickInitialPoint():
-    a = randrange(700, 850)
+    a = randrange(50, 850)
     b = randrange(700, 850)
     iniPoint = Point(a, b)
     return iniPoint
 
 # Prompts user to pick their bounce point
-
-
 def pickBouncePoint(i):
     message = Text(Point(450, 50), 'Turn ' +
                    str(i + 1) + ' Click your bounce point')
@@ -49,9 +41,16 @@ def pickBouncePoint(i):
     message.setSize(20)
     return message
 
+# Draws the values of each target square
+def score_label(a, b, n):
+    message = Text(Point(a, b), str(n))
+    message.setStyle('bold')
+    message.setTextColor('black')
+    message.setSize(15)
+    return message
+
+
 # Calculates landing point using the difference between the initial point and where the user clicks, and returns it
-
-
 def findFinal(iniCenter, p):
     initial = iniCenter
     bounce_pt = p
@@ -69,9 +68,8 @@ def findFinal(iniCenter, p):
     landPoint = Point(x2 - dx, y2 - dy)
     return landPoint
 
-# Takes the landing point returned by findFinal() and returns a boolean of whether or not it's inside a square in the target
-
-
+# Takes the landing point returned by findFinal() and returns a boolean of whether or not it's inside a square
+# in the target using the corners of the target square and the landing point
 def isInside(finPoint, makeSquare):
     # Grabs center point of where the "ball" landed
     land_center = finPoint.getCenter()
@@ -96,29 +94,29 @@ def isInside(finPoint, makeSquare):
     return inside
 
 # Takes the inner, middle, and outer targets of game and gives appropriate score depending on where the "ball" landed
-
-
 def computeScore(finPoint, s1, s2, s3, s4):
     score = 0
+
+    bonus = isInside(finPoint, s4)
     inner = isInside(finPoint, s3)
     middle = isInside(finPoint, s2)
     outer = isInside(finPoint, s1)
-    bonus = isInside(finPoint, s4)
-    if inner == True:
+
+    if bonus == True:
+        score += 25
+    elif inner == True:
         score += 10
     elif middle == True:
         score += 5
     elif outer == True:
         score += 2
-    elif bonus == True:
-        score += 25
     else:
         score += 0
     return score
 
-
+# draws results message at the top of screen after final turn
 def result(score):
-    message = Text(Point(450, 50), 'Score of ' + str(score) + '. Good Job!')
+    message = Text(Point(450, 50), 'Score of ' + str(score))
     message.setStyle('bold')
     message.setSize(20)
     return message
@@ -126,7 +124,7 @@ def result(score):
 
 def main():
     win = GraphWin("Target Game", 900, 900)
-    win.setBackground('aquamarine2')
+    # win.setBackground('aquamarine2')
     intro = introduction()
     intro.draw(win)
     win.getMouse()
@@ -134,10 +132,25 @@ def main():
 
     s1 = makeSquare(200, 200, 700, 700, 'red')
     s1.draw(win)
+    left_2 = score_label(250, 450, 2)
+    left_2.draw(win)
+    right_2 = score_label(650, 450, 2)
+    right_2.draw(win)
+
     s2 = makeSquare(300, 300, 600, 600, 'green')
     s2.draw(win)
+    left_5 = score_label(350, 450, 5)
+    left_5.draw(win)
+    right_5 = score_label(550, 450, 5)
+    right_5.draw(win)
+
     s3 = makeSquare(400, 400, 500, 500, 'blue')
     s3.draw(win)
+    left_10 = score_label(420, 450, 10)
+    left_10.draw(win)
+    right_10 = score_label(480, 450, 10)
+    right_10.draw(win)
+
     s4 = makeSquare(440, 440, 460, 460, 'yellow')
     s4.draw(win)
 
@@ -150,7 +163,7 @@ def main():
         extendo2 = start_point.getY() - 10
         extendo3 = start_point.getX() + 10
         extendo4 = start_point.getY() + 10
-        # using our starting point, lets extend it so it's more visible in our graphics window
+
         c1 = Point(extendo1, extendo2)
         c2 = Point(extendo3, extendo4)
 
@@ -182,6 +195,7 @@ def main():
 
     point = result(score)
     point.draw(win)
+    win.getMouse()
 
 
 main()
