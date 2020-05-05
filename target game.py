@@ -20,8 +20,6 @@ def introduction():
 
 # Make squares big fella
 # Constructs a rectangle having opposite corners at point1 and point2.
-
-
 def makeSquare(a, b, c, d, color):
     rect = Rectangle(Point(a, b), Point(c, d))
     rect.setFill(color)
@@ -37,8 +35,6 @@ def makeBounds(a, b, c, d):
 # Create random starting point in bottom third of window
 # Since our graphics window is 900x900, lets make our range of starting points slightly smaller
 # so that our initial starting point isn't off screen
-
-
 def pickInitialPoint():
     a = randrange(50, 850)
     b = randrange(700, 850)
@@ -46,8 +42,6 @@ def pickInitialPoint():
     return iniPoint
 
 # Prompts user to pick their bounce point
-
-
 def pickBouncePoint(i):
     message = Text(Point(450, 50), 'Turn ' +
                    str(i + 1) + ' Click your bounce point')
@@ -56,8 +50,6 @@ def pickBouncePoint(i):
     return message
 
 # Draws the values of each target square
-
-
 def score_label(a, b, n):
     message = Text(Point(a, b), str(n))
     message.setStyle('bold')
@@ -128,8 +120,6 @@ def run_game(win, s1, s2, s3, s4, draw_list):
 
 # Takes the landing point returned by findFinal() and returns a boolean of whether or not it's inside a square
 # in the target using the corners of the target square and the landing point
-
-
 def isInside(finPoint, makeSquare):
     # Grabs center point of where the "ball" landed
     land_center = finPoint.getCenter()
@@ -154,8 +144,6 @@ def isInside(finPoint, makeSquare):
     return inside
 
 # Takes the inner, middle, and outer targets of game and gives appropriate score depending on where the "ball" landed
-
-
 def computeScore(finPoint, s1, s2, s3, s4):
     round_score = 0
 
@@ -177,8 +165,6 @@ def computeScore(finPoint, s1, s2, s3, s4):
     return round_score
 
 # draws results message at the top of screen after final turn
-
-
 def result(score):
     message = Text(Point(450, 50), 'Score of ' + str(score))
     message.setStyle('bold')
