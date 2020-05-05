@@ -7,4 +7,4 @@ The ball’s starting point is randomly placed near the bottom of the window, be
 The user will choose (click) where they want their ball to bounce, which is the half-way point between the initial spot and the final spot.
 The user has three (3) chances to accumulate as many points as possible, with the option of playing again at the end of the game. 
 
-If you’re curious about the graphics library I used to create this game, check out the graphics.py file and its documentation file zellegraphics.pdf.
+If you’re curious about the graphics library I used to create this game, check out the "graphics.py" file and its documentation "zellegraphics.pdf".
