@@ -4,6 +4,7 @@
 #
 
 from graphics import *
+from button import *
 from random import randrange
 
 
@@ -19,14 +20,25 @@ def introduction():
 
 # Make squares big fella
 # Constructs a rectangle having opposite corners at point1 and point2.
+
+
 def makeSquare(a, b, c, d, color):
     rect = Rectangle(Point(a, b), Point(c, d))
     rect.setFill(color)
     return rect
 
+
+def makeBounds(a, b, c, d):
+    p1 = Point(a, b)
+    p2 = Point(c, d)
+    lineBounds = Line(p1, p2)
+    return lineBounds
+
 # Create random starting point in bottom third of window
 # Since our graphics window is 900x900, lets make our range of starting points slightly smaller
 # so that our initial starting point isn't off screen
+
+
 def pickInitialPoint():
     a = randrange(50, 850)
     b = randrange(700, 850)
@@ -34,6 +46,8 @@ def pickInitialPoint():
     return iniPoint
 
 # Prompts user to pick their bounce point
+
+
 def pickBouncePoint(i):
     message = Text(Point(450, 50), 'Turn ' +
                    str(i + 1) + ' Click your bounce point')
@@ -42,6 +56,8 @@ def pickBouncePoint(i):
     return message
 
 # Draws the values of each target square
+
+
 def score_label(a, b, n):
     message = Text(Point(a, b), str(n))
     message.setStyle('bold')
@@ -68,8 +84,52 @@ def findFinal(iniCenter, p):
     landPoint = Point(x2 - dx, y2 - dy)
     return landPoint
 
+
+def run_game(win, s1, s2, s3, s4, draw_list):
+    score = 0
+    for i in range(3):
+        start_point = pickInitialPoint()
+        # since pickInitialPoint() returns a point, i.e. a pixel, we'll extend its coordinates to make our 'ball' more visible
+        extendo1 = start_point.getX() - 10
+        extendo2 = start_point.getY() - 10
+        extendo3 = start_point.getX() + 10
+        extendo4 = start_point.getY() + 10
+
+        c1 = Point(extendo1, extendo2)
+        c2 = Point(extendo3, extendo4)
+        # using the extension points, create a rectangle with the initial point as its center
+        iniPoint = Rectangle(c1, c2)
+        iniPoint.setFill('black')
+        iniPoint.draw(win)
+
+        bounce = pickBouncePoint(i)
+        bounce.draw(win)
+        user_click = win.getMouse()
+        # undraw initial point and bounce prompt
+        iniPoint.undraw()
+        bounce.undraw()
+
+        landPoint = findFinal(start_point, user_click)
+        p1 = landPoint.getX() - 10
+        p2 = landPoint.getY() - 10
+        c3 = Point(p1, p2)
+        p3 = landPoint.getX() + 10
+        p4 = landPoint.getY() + 10
+        c4 = Point(p3, p4)
+
+        finPoint = Rectangle(c3, c4)
+        finPoint.setFill('black')
+        finPoint.draw(win)
+        draw_list.append(finPoint)
+
+        compute = computeScore(finPoint, s1, s2, s3, s4)
+        score += compute
+    return score
+
 # Takes the landing point returned by findFinal() and returns a boolean of whether or not it's inside a square
 # in the target using the corners of the target square and the landing point
+
+
 def isInside(finPoint, makeSquare):
     # Grabs center point of where the "ball" landed
     land_center = finPoint.getCenter()
@@ -94,8 +154,10 @@ def isInside(finPoint, makeSquare):
     return inside
 
 # Takes the inner, middle, and outer targets of game and gives appropriate score depending on where the "ball" landed
+
+
 def computeScore(finPoint, s1, s2, s3, s4):
-    score = 0
+    round_score = 0
 
     bonus = isInside(finPoint, s4)
     inner = isInside(finPoint, s3)
@@ -103,18 +165,20 @@ def computeScore(finPoint, s1, s2, s3, s4):
     outer = isInside(finPoint, s1)
 
     if bonus == True:
-        score += 25
+        round_score += 25
     elif inner == True:
-        score += 10
+        round_score += 10
     elif middle == True:
-        score += 5
+        round_score += 5
     elif outer == True:
-        score += 2
+        round_score += 2
     else:
-        score += 0
-    return score
+        round_score += 0
+    return round_score
 
 # draws results message at the top of screen after final turn
+
+
 def result(score):
     message = Text(Point(450, 50), 'Score of ' + str(score))
     message.setStyle('bold')
@@ -122,80 +186,72 @@ def result(score):
     return message
 
 
+def remove(draw_list):
+    for element in draw_list:
+        element.undraw()
+
+
+def play_again():
+    message = Text(Point(450, 750),
+                   "Click anywhere to play again, or 'Quit' below to exit")
+    message.setStyle('bold')
+    message.setSize(20)
+    return message
+
+
 def main():
-    win = GraphWin("Target Game", 900, 900)
-    # win.setBackground('aquamarine2')
+    win = GraphWin("Target Game", 900, 950)
     intro = introduction()
     intro.draw(win)
-    win.getMouse()
+    pt = win.getMouse()
     intro.undraw()
 
-    s1 = makeSquare(200, 200, 700, 700, 'red')
+    draw_list = []
+
+    s1 = makeSquare(200, 100, 700, 600, 'red')
     s1.draw(win)
-    left_2 = score_label(250, 450, 2)
+    left_2 = score_label(250, 350, 2)
     left_2.draw(win)
-    right_2 = score_label(650, 450, 2)
+    right_2 = score_label(650, 350, 2)
     right_2.draw(win)
 
-    s2 = makeSquare(300, 300, 600, 600, 'green')
+    s2 = makeSquare(300, 200, 600, 500, 'green')
     s2.draw(win)
-    left_5 = score_label(350, 450, 5)
+    left_5 = score_label(350, 350, 5)
     left_5.draw(win)
-    right_5 = score_label(550, 450, 5)
+    right_5 = score_label(550, 350, 5)
     right_5.draw(win)
 
-    s3 = makeSquare(400, 400, 500, 500, 'blue')
+    s3 = makeSquare(400, 300, 500, 400, 'blue')
     s3.draw(win)
-    left_10 = score_label(420, 450, 10)
+    left_10 = score_label(420, 350, 10)
     left_10.draw(win)
-    right_10 = score_label(480, 450, 10)
+    right_10 = score_label(480, 350, 10)
     right_10.draw(win)
 
-    s4 = makeSquare(440, 440, 460, 460, 'yellow')
+    s4 = makeSquare(440, 340, 460, 360, 'yellow')
     s4.draw(win)
 
-    score = 0
+    lineBounds = makeBounds(0, 875, 900, 875)
+    lineBounds.draw(win)
 
-    for i in range(3):
-        start_point = pickInitialPoint()
-        # since pickInitialPoint() returns a point, i.e. a pixel, we'll extend its coordinates to make our 'ball' more visible
-        extendo1 = start_point.getX() - 10
-        extendo2 = start_point.getY() - 10
-        extendo3 = start_point.getX() + 10
-        extendo4 = start_point.getY() + 10
+    quit = Button(win, Point(450, 900), 100, 50, 'Quit')
+    quit.deactivate()
 
-        c1 = Point(extendo1, extendo2)
-        c2 = Point(extendo3, extendo4)
+    while not quit.clicked(pt):
+        score = run_game(win, s1, s2, s3, s4, draw_list)
 
-        iniPoint = Rectangle(c1, c2)
-        iniPoint.setFill('black')
-        iniPoint.draw(win)
+        point = result(score)
+        point.draw(win)
+        draw_list.append(point)
+        play_or_exit = play_again()
+        play_or_exit.draw(win)
+        draw_list.append(play_or_exit)
+        quit.activate()
+        pt = win.getMouse()
+        remove(draw_list)
 
-        bounce = pickBouncePoint(i)
-        bounce.draw(win)
-        user_click = win.getMouse()
-        # undraw initial point and bounce prompt
-        iniPoint.undraw()
-        bounce.undraw()
-
-        landPoint = findFinal(start_point, user_click)
-        p1 = landPoint.getX() - 10
-        p2 = landPoint.getY() - 10
-        c3 = Point(p1, p2)
-        p3 = landPoint.getX() + 10
-        p4 = landPoint.getY() + 10
-        c4 = Point(p3, p4)
-
-        finPoint = Rectangle(c3, c4)
-        finPoint.setFill('black')
-        finPoint.draw(win)
-
-        compute = computeScore(finPoint, s1, s2, s3, s4)
-        score += compute
-
-    point = result(score)
-    point.draw(win)
-    win.getMouse()
+    win.close()
 
 
 main()
