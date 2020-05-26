@@ -1,3 +1,5 @@
+![image](https://user-images.githubusercontent.com/46944329/82933151-5ae57f80-9f3e-11ea-90a1-70d9a906d6b6.png)
+
 # 8-bit-target-game
 Target Practice Game
 
