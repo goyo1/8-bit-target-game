@@ -10,4 +10,6 @@ The user will choose (click) where they want their ball to bounce, which is the 
 The user has three (3) chances to accumulate as many points as possible, with the option of playing again at the end of the game. 
 
 If you’re curious about the graphics library I used to create this game, check out the "graphics.py" file and its documentation "zellegraphics.pdf".
+
+
 ![image](https://user-images.githubusercontent.com/46944329/82933555-efe87880-9f3e-11ea-8373-7e8e665396f2.png)
